@@ -16,6 +16,7 @@ export class ListComponent implements OnInit {
 cities: City[] = [];
 
   constructor(
+    private weatherService: WeatherService
   ) {
 
   }
@@ -26,4 +27,38 @@ cities: City[] = [];
         this.cities = storage;
       }
   }
+
+  private addCity(cityInputValue: string): void {
+    if (cityInputValue.trim().length !== 0) {
+      this.weatherService.getWeatherInfoByCity(cityInputValue).subscribe((newCity: City) => {
+        // try {
+        //   if (newCity) {
+        //     this.cities.forEach(city => {
+        //       if (city.cod === newCity.cod) {
+        //         throw(1);
+        //       }
+        //     });
+            this.cities.push(newCity);
+            this.reWriteLocalStorage();
+            cityInputValue = '';
+      //     }
+      //   } catch (err) {
+      //     console.log('Already added')
+      //   }
+      });
+    }
+  }
+
+  private deleteCity(id: number): void {
+    this.cities = this.cities.filter((city) => {
+      return city.id !== id;
+    });
+    this.reWriteLocalStorage();
+  }
+
+  private reWriteLocalStorage(): void {
+    localStorage.clear();
+    localStorage.setItem('cities', JSON.stringify(this.cities));
+  }
+
 }
