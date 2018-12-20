@@ -106,4 +106,7 @@ export class ListComponent implements OnInit {
     localStorage.setItem('cities', JSON.stringify(this.cities));
   }
 
+  public getListLength(): number {
+    return this.cities.length;
+  }
 }
