@@ -5,6 +5,16 @@
         Добавьте города
       </ng-container>
 </div>
-<ng-container *ngFor="let city of cities">
-    <app-city [city]="city" (delete)="deleteCity($event)"></app-city>
-  </ng-container>
+<ng-container *ngIf="pagedCities && pagedCities.length > 0">
+  <app-city *ngFor="let city of pagedCities" [city]="city" (delete)="deleteCity($event)"></app-city>
+</ng-container>
+  <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+    <div *ngIf="pager && pager.pages && pager.pages.length > 0" class="btn-group mr-2" role="group" aria-label="First group">
+      <button type="button" [ngClass]="{disabled:pager.currentPage === 1}" class="btn btn-primary" (click)="setPage(1)">First</button>
+      <button type="button" [ngClass]="{disabled:pager.currentPage === 1}" class="btn btn-primary" (click)="setPage(pager.currentPage - 1)">Previous</button>
+      
+      <button *ngFor="let page of pager.pages; index as i " [ngClass]="{active:pager.currentPage === page}" type="button" [ngClass]="{disabled:pager.currentPage === 1}" class="btn btn-primary" (click)="setPage(i+1)">{{i + 1}}</button>
+      
+      <button type="button" [ngClass]="{disabled:pager.currentPage === pager.totalPages}" class="btn btn-primary" (click)="setPage(pager.currentPage + 1)">Next</button>
+      <button type="button" [ngClass]="{disabled:pager.currentPage === pager.totalPages}" class="btn btn-primary" (click)="setPage(pager.totalPages)">Last</button>
+    </div>

@@ -5,6 +5,8 @@ import { WeatherService } from '../shared/services/weather.service';
 import { City } from '../shared/classes/city';
 import { throwError } from 'rxjs';
 import { store } from '@angular/core/src/render3/instructions';
+import { PagerService } from '../shared/services/pager.service';
+import { PageProperties } from '../shared/classes/page-properties';
 
 @Component({
   selector: 'app-list',
@@ -13,10 +15,13 @@ import { store } from '@angular/core/src/render3/instructions';
 })
 export class ListComponent implements OnInit {
 
-cities: City[] = [];
+  cities: City[] = [];
+  pagedCities: City[] = [];
+  pager: PageProperties = null;
 
   constructor(
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    private pagerService: PagerService
   ) {
 
   }
@@ -25,10 +30,19 @@ cities: City[] = [];
     const storage = JSON.parse(localStorage.getItem('cities'));
       if (storage.length !== 0) {
         this.cities = storage;
+        this.setPage(1);
       }
   }
+  setPage(page: number) {
+    this.pager = this.pagerService.getPager(this.cities.length, page);
+    this.pagedCities = this.cities.slice(this.pager.startIndex, this.pager.endIndex + 1);
+    console.log(this.pager);
+    console.log(this.pagedCities);
+}
 
-  private addCity(cityInputValue: string): void {
+
+  private addCity(cityInputValue): void {
+    console.log(cityInputValue);
     if (cityInputValue.trim().length !== 0) {
       this.weatherService.getWeatherInfoByCity(cityInputValue).subscribe((newCity: City) => {
         // try {
@@ -38,9 +52,22 @@ cities: City[] = [];
         //         throw(1);
         //       }
         //     });
-            this.cities.push(newCity);
-            this.reWriteLocalStorage();
-            cityInputValue = '';
+        if (this.isNeedToOpenNewPage()) {
+          this.cities.push(newCity);
+          this.reWriteLocalStorage();
+          this.setPage(this.pager.currentPage + 1);
+          cityInputValue = '';
+
+        } else {
+          this.cities.push(newCity);
+          this.reWriteLocalStorage();
+          this.setPage(this.pager.currentPage);
+
+          if (this.isPagedCitiesEmpty()) {
+            this.setPage(1);
+          }
+          cityInputValue = '';
+        }
       //     }
       //   } catch (err) {
       //     console.log('Already added')
@@ -48,12 +75,28 @@ cities: City[] = [];
       });
     }
   }
+  private isNeedToOpenNewPage(): boolean {
+    return this.pagedCities.length + 1 > 5;
+  }
+  private isPagedCitiesEmpty(): boolean {
+    return this.pagedCities.length === 0;
+  }
 
   private deleteCity(id: number): void {
     this.cities = this.cities.filter((city) => {
       return city.id !== id;
     });
+    this.pagedCities = this.pagedCities.filter((city) => {
+      return city.id !== id;
+    });
     this.reWriteLocalStorage();
+    if (this.pagedCities.length === 0) {
+      const storage = JSON.parse(localStorage.getItem('cities'));
+      if (storage.length !== 0) {
+        this.cities = storage;
+        this.setPage(this.pager.currentPage - 1);
+      }
+    }
   }
 
   private reWriteLocalStorage(): void {
