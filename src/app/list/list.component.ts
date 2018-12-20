@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { WeatherService } from '../shared/services/weather.service';
 import { City } from '../shared/classes/city';
-import { throwError } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { store } from '@angular/core/src/render3/instructions';
 import { PagerService } from '../shared/services/pager.service';
 import { PageProperties } from '../shared/classes/page-properties';
@@ -23,26 +23,30 @@ export class ListComponent implements OnInit {
     private weatherService: WeatherService,
     private pagerService: PagerService
   ) {
-
   }
 
   ngOnInit() {
     const storage = JSON.parse(localStorage.getItem('cities'));
-      if (storage.length !== 0) {
+    if (storage.length !== 0) {
         this.cities = storage;
         this.setPage(1);
-      }
+    }
+    if (navigator && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.weatherService.getWeatherByCoodrinates(position.coords.longitude , position.coords.latitude).subscribe(data => {
+          console.log(data.name);
+        });
+      });
+    } else {}
   }
+
   setPage(page: number) {
     this.pager = this.pagerService.getPager(this.cities.length, page);
     this.pagedCities = this.cities.slice(this.pager.startIndex, this.pager.endIndex + 1);
-    console.log(this.pager);
-    console.log(this.pagedCities);
-}
+  }
 
 
   private addCity(cityInputValue): void {
-    console.log(cityInputValue);
     if (cityInputValue.trim().length !== 0) {
       this.weatherService.getWeatherInfoByCity(cityInputValue).subscribe((newCity: City) => {
         // try {
@@ -52,19 +56,17 @@ export class ListComponent implements OnInit {
         //         throw(1);
         //       }
         //     });
-        if (this.isNeedToOpenNewPage()) {
+
           this.cities.push(newCity);
           this.reWriteLocalStorage();
+
+          if (this.isNeedToOpenNewPage()) {
           this.setPage(this.pager.currentPage + 1);
-          cityInputValue = '';
-
         } else {
-          this.cities.push(newCity);
-          this.reWriteLocalStorage();
-          this.setPage(this.pager.currentPage);
-
           if (this.isPagedCitiesEmpty()) {
             this.setPage(1);
+          } else {
+            this.setPage(this.pager.currentPage);
           }
           cityInputValue = '';
         }

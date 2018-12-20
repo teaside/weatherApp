@@ -21,4 +21,8 @@ export class WeatherService {
       return null;
     }
   }
+
+  getWeatherByCoodrinates(lng, lat): Observable<any> {
+    return this.http.get<any>(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${environment.appId}`);
+  }
 }
