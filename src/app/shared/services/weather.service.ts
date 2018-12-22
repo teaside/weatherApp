@@ -16,7 +16,11 @@ export class WeatherService {
 
   getWeatherInfoByCity(city: string): Observable<City> {
     if (city !== null && city !== undefined && city !== '') {
-      return this.http.get<City>(`http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=${environment.appId}`);
+      try {
+        return this.http.get<City>(`http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=${environment.appId}`);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       return null;
     }

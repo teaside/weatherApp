@@ -1,0 +1,42 @@
+.header {
+    // padding: 10px 0;
+}
+.header__app-name {
+    // margin: 0;
+}
+.header__current-city {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30%;
+    min-width: 275px;
+    margin: 0 auto;
+}
+
+.paginator {
+    justify-content: center;
+ }
+
+ .search {
+    max-width: 30%;
+    padding: 16px 0 0 0;
+    margin: 0 auto;
+    min-width: 280px;
+ }
+
+.city-items {
+    min-height: 300px;  
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+ .city-item {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    max-width: 300px;
+    min-width: 200px;
+    margin: 0 auto;
+ }

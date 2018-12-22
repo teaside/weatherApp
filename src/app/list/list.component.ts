@@ -7,6 +7,7 @@ import { throwError, Observable } from 'rxjs';
 import { store } from '@angular/core/src/render3/instructions';
 import { PagerService } from '../shared/services/pager.service';
 import { PageProperties } from '../shared/classes/page-properties';
+import { CurrentCity } from '../shared/classes/current-city';
 
 @Component({
   selector: 'app-list',
@@ -17,6 +18,7 @@ export class ListComponent implements OnInit {
 
   cities: City[] = [];
   pagedCities: City[] = [];
+  currentCity: CurrentCity = null;
   pager: PageProperties = null;
 
   constructor(
@@ -33,8 +35,8 @@ export class ListComponent implements OnInit {
     }
     if (navigator && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        this.weatherService.getWeatherByCoodrinates(position.coords.longitude , position.coords.latitude).subscribe(data => {
-          console.log(data.name);
+        this.weatherService.getWeatherByCoodrinates(position.coords.longitude, position.coords.latitude).subscribe((data: CurrentCity) => {
+          this.currentCity = data;
         });
       });
     } else {}
@@ -49,13 +51,14 @@ export class ListComponent implements OnInit {
   private addCity(cityInputValue): void {
     if (cityInputValue.trim().length !== 0) {
       this.weatherService.getWeatherInfoByCity(cityInputValue).subscribe((newCity: City) => {
-        // try {
-        //   if (newCity) {
-        //     this.cities.forEach(city => {
-        //       if (city.cod === newCity.cod) {
-        //         throw(1);
-        //       }
-        //     });
+
+        try {
+            for (let i = 0; i < this.cities.length; i++) {
+              if (this.cities[i].id === newCity.id) {
+                alert('already added');
+                return;
+              }
+            }
 
           this.cities.push(newCity);
           this.reWriteLocalStorage();
@@ -70,11 +73,11 @@ export class ListComponent implements OnInit {
           }
           cityInputValue = '';
         }
-      //     }
-      //   } catch (err) {
-      //     console.log('Already added')
-      //   }
-      });
+          // }
+        } catch (err) {
+          console.log('Already added');
+        }
+      }, error => {console.log(`can't find city by this name`); });
     }
   }
   private isNeedToOpenNewPage(): boolean {
@@ -88,17 +91,21 @@ export class ListComponent implements OnInit {
     this.cities = this.cities.filter((city) => {
       return city.id !== id;
     });
-    this.pagedCities = this.pagedCities.filter((city) => {
-      return city.id !== id;
-    });
+    // this.pagedCities = this.pagedCities.filter((city) => {
+    //   return city.id !== id;
+    // });
     this.reWriteLocalStorage();
-    if (this.pagedCities.length === 0) {
+
       const storage = JSON.parse(localStorage.getItem('cities'));
-      if (storage.length !== 0) {
-        this.cities = storage;
+      this.cities = storage;
+      console.log(this.pagedCities.length - 1);
+      if (this.cities.length > 5 && this.pagedCities.length - 1 !== 0) {
+        this.setPage(this.pager.currentPage);
+      } else if (this.cities.length > 5 && this.pagedCities.length - 1 === 0) {
         this.setPage(this.pager.currentPage - 1);
+      } else if (this.cities.length <= 5) {
+        this.setPage(1);
       }
-    }
   }
 
   private reWriteLocalStorage(): void {

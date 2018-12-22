@@ -7,7 +7,8 @@ const routes: Routes = [
   // {path: '', component: AppComponent},
   // {path: 'details/:cityId', component: DetailsComponent},
   {path: 'list', component: ListComponent},
-  {path: '**', redirectTo: 'add'}
+  {path: '**', component: ListComponent},
+  {path: '', component: ListComponent}
 ];
 
 @NgModule({
