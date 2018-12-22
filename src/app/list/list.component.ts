@@ -31,6 +31,7 @@ export class ListComponent implements OnInit {
     const storage = JSON.parse(localStorage.getItem('cities'));
     if (storage.length !== 0) {
         this.cities = storage;
+        console.log(this.cities);
         this.setPage(1);
     }
     if (navigator && navigator.geolocation) {
@@ -91,9 +92,7 @@ export class ListComponent implements OnInit {
     this.cities = this.cities.filter((city) => {
       return city.id !== id;
     });
-    // this.pagedCities = this.pagedCities.filter((city) => {
-    //   return city.id !== id;
-    // });
+
     this.reWriteLocalStorage();
 
       const storage = JSON.parse(localStorage.getItem('cities'));

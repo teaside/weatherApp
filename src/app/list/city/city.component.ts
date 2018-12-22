@@ -19,4 +19,7 @@ export class CityComponent implements OnInit {
     this.delete.emit(this.city.id);
   }
 
+  private getTemperatureInCelsius(): string {
+    return `${Math.round((this.city.main.temp - 32) * 5 / 9)} °С`;
+  }
 }
