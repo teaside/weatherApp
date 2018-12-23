@@ -31,7 +31,6 @@ export class ListComponent implements OnInit {
     const storage = JSON.parse(localStorage.getItem('cities'));
     if (storage.length !== 0) {
         this.cities = storage;
-        console.log(this.cities);
         this.setPage(1);
     }
     if (navigator && navigator.geolocation) {
@@ -40,7 +39,9 @@ export class ListComponent implements OnInit {
           this.currentCity = data;
         });
       });
-    } else {}
+    } else {
+      // can't show the waether in the current place
+    }
   }
 
   setPage(page: number) {
@@ -78,9 +79,11 @@ export class ListComponent implements OnInit {
         } catch (err) {
           console.log('Already added');
         }
-      }, error => {console.log(`can't find city by this name`); });
-    }
+      }, error => {
+        alert(`can't find city by this name`);
+    });
   }
+}
   private isNeedToOpenNewPage(): boolean {
     return this.pagedCities.length + 1 > 5;
   }
@@ -97,7 +100,6 @@ export class ListComponent implements OnInit {
 
       const storage = JSON.parse(localStorage.getItem('cities'));
       this.cities = storage;
-      console.log(this.pagedCities.length - 1);
       if (this.cities.length > 5 && this.pagedCities.length - 1 !== 0) {
         this.setPage(this.pager.currentPage);
       } else if (this.cities.length > 5 && this.pagedCities.length - 1 === 0) {

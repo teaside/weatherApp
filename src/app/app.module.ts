@@ -7,13 +7,15 @@ import { ListComponent } from './list/list.component';
 import { CityComponent } from './list/city/city.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PluralForCityPipe } from './shared/pipes/plural-for-city.pipe';
+import { PaginatorComponent } from './list/paginator/paginator.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ListComponent,
     CityComponent,
-    PluralForCityPipe
+    PluralForCityPipe,
+    PaginatorComponent
   ],
   imports: [
     BrowserModule,

@@ -9,8 +9,8 @@
 </div>
 
 <div class="input-group mb-3 search">
-  <input type="text" class="form-control"  #city (keyup.enter)="addCity(city.value)" placeholder="Введите название города">
-  <div class="input-group-append">
+  <input type="text" class="form-control" [ngClass]="{}"  #city (keyup.enter)="addCity(city.value)" placeholder="Введите название города">
+  <div class="input-group-append" data-toggle="popover" #buttonAdd data-content="Не удается найти такой город">
     <button class="btn btn-outline-primary" type="button"  (click)="addCity(city.value)">+</button>
   </div>
 </div>
@@ -25,13 +25,5 @@
 </div>
 
 <div *ngIf="this.cities && this.cities !== null && this.cities.length > 0" class="btn-toolbar mb-3 paginator" role="toolbar">
-  <div *ngIf="pager && pager.pages && pager.pages.length > 0" class="btn-group mr-2" role="group" aria-label="First group">
-    <button type="button" [ngClass]="{disabled:pager.currentPage === 1}" class="btn btn-primary" (click)="setPage(1)">First</button>
-    <button type="button" [ngClass]="{disabled:pager.currentPage === 1}" class="btn btn-primary" (click)="setPage(pager.currentPage - 1)">&lt;</button>
-    
-    <button *ngFor="let page of pager.pages; index as i " [ngClass]="{active:pager.currentPage === page}" type="button" [ngClass]="{disabled:pager.currentPage === 1}" class="btn btn-primary" (click)="setPage(i+1)">{{i + 1}}</button>
-    
-    <button type="button" [ngClass]="{disabled:pager.currentPage === pager.totalPages}" class="btn btn-primary" (click)="setPage(pager.currentPage + 1)">&gt;</button>
-    <button type="button" [ngClass]="{disabled:pager.currentPage === pager.totalPages}" class="btn btn-primary" (click)="setPage(pager.totalPages)">Last</button>
-  </div>
+  <app-paginator [pager]="pager" (setPageEvent)="setPage($event)"></app-paginator>
 </div>
