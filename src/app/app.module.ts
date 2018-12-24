@@ -8,6 +8,7 @@ import { CityComponent } from './list/city/city.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PluralForCityPipe } from './shared/pipes/plural-for-city.pipe';
 import { PaginatorComponent } from './list/paginator/paginator.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { PaginatorComponent } from './list/paginator/paginator.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule
   ],
   exports: [
 

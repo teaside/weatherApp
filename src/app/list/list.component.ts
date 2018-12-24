@@ -1,13 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { WeatherService } from '../shared/services/weather.service';
 import { City } from '../shared/classes/city';
-import { throwError, Observable } from 'rxjs';
-import { store } from '@angular/core/src/render3/instructions';
 import { PagerService } from '../shared/services/pager.service';
 import { PageProperties } from '../shared/classes/page-properties';
 import { CurrentCity } from '../shared/classes/current-city';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-list',
@@ -23,11 +20,13 @@ export class ListComponent implements OnInit {
 
   constructor(
     private weatherService: WeatherService,
-    private pagerService: PagerService
+    private pagerService: PagerService,
+    private spinner: NgxSpinnerService
   ) {
   }
 
   ngOnInit() {
+    this.spinner.show();
     const storage = JSON.parse(localStorage.getItem('cities'));
     if (storage.length !== 0) {
         this.cities = storage;
@@ -37,6 +36,8 @@ export class ListComponent implements OnInit {
       navigator.geolocation.getCurrentPosition((position) => {
         this.weatherService.getWeatherByCoodrinates(position.coords.longitude, position.coords.latitude).subscribe((data: CurrentCity) => {
           this.currentCity = data;
+          this.spinner.hide();
+          // setTimeout(() => {this.spinner.hide(); }, 3000);
         });
       });
     } else {
@@ -51,6 +52,7 @@ export class ListComponent implements OnInit {
 
 
   private addCity(cityInputValue): void {
+    this.spinner.show();
     if (cityInputValue.trim().length !== 0) {
       this.weatherService.getWeatherInfoByCity(cityInputValue).subscribe((newCity: City) => {
 
@@ -58,6 +60,7 @@ export class ListComponent implements OnInit {
             for (let i = 0; i < this.cities.length; i++) {
               if (this.cities[i].id === newCity.id) {
                 alert('already added');
+                this.spinner.hide();
                 return;
               }
             }
@@ -75,6 +78,7 @@ export class ListComponent implements OnInit {
           }
           cityInputValue = '';
         }
+        this.spinner.hide();
           // }
         } catch (err) {
           console.log('Already added');
@@ -92,6 +96,7 @@ export class ListComponent implements OnInit {
   }
 
   private deleteCity(id: number): void {
+    this.spinner.show();
     this.cities = this.cities.filter((city) => {
       return city.id !== id;
     });
@@ -107,6 +112,7 @@ export class ListComponent implements OnInit {
       } else if (this.cities.length <= 5) {
         this.setPage(1);
       }
+      this.spinner.hide();
   }
 
   private reWriteLocalStorage(): void {
