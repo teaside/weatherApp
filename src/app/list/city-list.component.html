@@ -1,0 +1,29 @@
+<div class="header">
+  <div class="header__app-name alert alert-success">
+      <h1>WeatherApp</h1>
+  </div>
+  <div *ngIf="isHaveAccessToCurrentPosition()" class="header__current-city alert alert-primary">
+      <span>Местоположение: {{currentCity.name}}</span>
+      <span>Температура: {{currentCity.main.temp}} °С</span>
+  </div>
+</div>
+
+<div class="input-group mb-3 search">
+  <input type="text" class="form-control" id="city" #city (keyup.enter)="addCity(city.value)" placeholder="Введите название города">
+  <div class="input-group-append">
+    <button class="btn btn-outline-primary" type="button"  (click)="addCity(city.value)">+</button>
+  </div>
+</div>
+
+<div class="header">
+    <h4 *ngIf="cities.length !== 0">В списке {{ getListLength() | pluralNamePipe:'город':'города':'городов'}}</h4> 
+    <h4 *ngIf="cities.length === 0" class="">В списке нет городов :(</h4>  
+</div>
+
+<div class="city-items" *ngIf="iShowCityItems()">
+  <app-city class="city-item" *ngFor="let city of pagedCities" [city]="city" (deleteEvent)="deleteCityByid($event)"></app-city>
+</div>
+
+<div *ngIf="isShowPaginator()" class="btn-toolbar mb-3 paginator">
+  <app-paginator [pager]="pager" (setPageEvent)="setPage($event)"></app-paginator>
+</div>

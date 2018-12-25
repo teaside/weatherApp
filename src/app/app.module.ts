@@ -3,19 +3,20 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ListComponent } from './list/list.component';
 import { CityComponent } from './list/city/city.component';
-import { HttpClientModule } from '@angular/common/http';
-import { PluralForCityPipe } from './shared/pipes/plural-for-city.pipe';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { PluralNamePipe } from './shared/pipes/plural-for-city.pipe';
 import { PaginatorComponent } from './list/paginator/paginator.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ErrorInterceptor } from './shared/classes/error-interceptor';
+import { CityListComponent } from './list/city-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ListComponent,
+    CityListComponent,
     CityComponent,
-    PluralForCityPipe,
+    PluralNamePipe,
     PaginatorComponent
   ],
   imports: [
@@ -27,7 +28,14 @@ import { NgxSpinnerModule } from 'ngx-spinner';
   exports: [
 
   ],
-  providers: [HttpClientModule ],
+  providers: [
+    HttpClientModule,
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: ErrorInterceptor,
+        multi: true
+      }
+   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

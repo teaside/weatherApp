@@ -9,17 +9,17 @@ import { City } from 'src/app/shared/classes/city';
 export class CityComponent implements OnInit {
 
   @Input() city: City;
-  @Output() delete = new EventEmitter<number>();
+  @Output() deleteEvent = new EventEmitter<number>();
   constructor() { }
 
   ngOnInit() {
   }
 
   private deleteThisCity() {
-    this.delete.emit(this.city.id);
+    this.deleteEvent.emit(this.city.id);
   }
 
   private getTemperatureInCelsius(): string {
-    return `${Math.round((this.city.main.temp - 32) * 5 / 9)} °С`;
+    return `${Math.round((this.city.temperature - 32) * 5 / 9)} °С`;
   }
 }

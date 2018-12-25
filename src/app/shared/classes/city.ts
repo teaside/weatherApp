@@ -1,20 +1,12 @@
 export class City {
     public id: number;
     public name: string;
-    public main: Main;
-    public weather: Weather[];
+    public temperature: number;
 }
-
-class Main {
-    temp: number;
-    pressure: number;
-    humidity: number;
-    temp_min: number;
-    temp_max: number;
-}
-
-class Weather {
-    id: number;
-    main: string;
-    description: string;
+export function fromOpenWeatherToClientApi(city): City {
+    const validCity: City = new City();
+    validCity.id = city['id'];
+    validCity.name = city['name'];
+    validCity.temperature = city['main']['temp'];
+    return validCity;
 }

@@ -6,14 +6,11 @@ import { PageProperties } from 'src/app/shared/classes/page-properties';
   templateUrl: './paginator.component.html',
   styleUrls: ['./paginator.component.scss']
 })
-export class PaginatorComponent implements OnInit {
+export class PaginatorComponent {
 
   @Input('pager') pager: PageProperties = null;
   @Output() setPageEvent = new EventEmitter<number>();
   constructor() { }
-
-  ngOnInit() {
-  }
 
   setPage(value: number) {
     this.setPageEvent.emit(value);

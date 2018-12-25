@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { City } from '../classes/city';
-
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -15,18 +15,16 @@ export class WeatherService {
   ) { }
 
   getWeatherInfoByCity(city: string): Observable<City> {
-    if (city !== null && city !== undefined && city !== '') {
-      try {
-        return this.http.get<City>(`http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&APPID=${environment.appId}`);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      return null;
+    if (!_.isEmpty(city)) {
+        // tslint:disable-next-line:max-line-length
+        return this.http.get<City>(`${environment.apiPath}/weather?q=${city}&units=imperial&APPID=${environment.openWeatherAppId}`);
     }
   }
 
   getWeatherByCoodrinates(lng, lat): Observable<any> {
-    return this.http.get<any>(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${environment.appId}`);
+      // if (!_.isEmpty) {
+      // tslint:disable-next-line:max-line-length
+      return this.http.get<any>(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${environment.openWeatherAppId}`);
+    // }
   }
 }

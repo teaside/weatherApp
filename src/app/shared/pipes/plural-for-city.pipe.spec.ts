@@ -1,8 +1,8 @@
-import { PluralForCityPipe } from './plural-for-city.pipe';
+import { PluralNamePipe } from './plural-for-city.pipe';
 
-describe('PluralForCityPipe', () => {
+describe('PluralNamePipe', () => {
   it('create an instance', () => {
-    const pipe = new PluralForCityPipe();
+    const pipe = new PluralNamePipe();
     expect(pipe).toBeTruthy();
   });
 });
